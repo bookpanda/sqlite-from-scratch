@@ -48,6 +48,9 @@ e.g. we have number 0x1234
 2. add highest bit (MSB) to each chunk to show:
 - 1xxx xxxx = more chunks follow
 - 0xxx xxxx = this is the last chunk
+
+> SQLite's varint can store up to 9 bytes (8*7 bits + 8 bits from 9th chunk = 64-bit unsigned integer).
+
 #### decoding varints: 0x1b
 - 0x1b = 0001 1011
 - break into 7-bit chunks: "0"001 1011
@@ -59,7 +62,7 @@ e.g. we have number 0x1234
 ## Structure
 A b-tree page is divided into regions in the following order:
 1. The 100-byte database file header (found on page 1 only)
-2. The 8 or 12 byte b-tree page header
+2. The 8 (leaf page) or 12 (interior page) byte b-tree page header
 3. The cell pointer array
 4. Unallocated space
 5. The cell content area
@@ -118,3 +121,33 @@ A b-tree page is divided into regions in the following order:
 6f 72 61 6e 67 65 73  // Value of sqlite_schema.tbl_name: "oranges"  <---
 ...
 ```
+
+### First page
+```bash
+00000000  53 51 4c 69 74 65 20 66  6f 72 6d 61 74 20 33 00  |SQLite format 3.|
+00000010  10 00 01 01 00 40 20 20  00 00 00 05 00 00 00 04  |.....@  ........|
+00000020  00 00 00 00 00 00 00 00  00 00 00 02 00 00 00 04  |................|
+00000030  00 00 00 00 00 00 00 00  00 00 00 01 00 00 00 00  |................|
+00000040  00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00  |................|
+00000050  00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 05  |................|
+00000060  00 2e 4b 90|0d 00 00|00  03|0e c3 00|0f 8f|0f 3d| |..K............=|
+00000070 |0e c3|00 00 00 00 00 00  00 00 00 00 00 00 00 00  |................|
+00000080  00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00  |................|
+*
+00000ec0  00 00 00|78|03|07 17 1b  1b 01 81 47|74 61 62 6c  |...x.......Gtabl|
+00000ed0  65 6f 72 61 6e 67 65 73  6f 72 61 6e 67 65 73 04  |eorangesoranges.|
+00000ee0  43 52 45 41 54 45 20 54  41 42 4c 45 20 6f 72 61  |CREATE TABLE ora|
+00000ef0  6e 67 65 73 0a 28 0a 09  69 64 20 69 6e 74 65 67  |nges.(..id integ|
+00000f00  65 72 20 70 72 69 6d 61  72 79 20 6b 65 79 20 61  |er primary key a|
+00000f10  75 74 6f 69 6e 63 72 65  6d 65 6e 74 2c 0a 09 6e  |utoincrement,..n|
+00000f20  61 6d 65 20 74 65 78 74  2c 0a 09 64 65 73 63 72  |ame text,..descr|
+00000f30  69 70 74 69 6f 6e 20 74  65 78 74 0a 29 50 02 06  |iption text.)P..|
+00000f40  17 2b 2b 01 59 74 61 62  6c 65 73 71 6c 69 74 65  |.++.Ytablesqlite|
+00000f50  5f 73 65 71 75 65 6e 63  65 73 71 6c 69 74 65 5f  |_sequencesqlite_|
+00000f60  73 65 71 75 65 6e 63 65  03 43 52 45 41 54 45 20  |sequence.CREATE |
+00000f70  54 41 42 4c 45 20 73 71  6c 69 74 65 5f 73 65 71  |TABLE sqlite_seq|
+00000f80  75 65 6e 63 65 28 6e 61  6d 65 2c 73 65 71 29 6f  |uence(name,seq)o|
+
+```
+- page header: 0d 00 00 00  03 0e c3 00
+- cell pointer array: 0f 8f, 0f 3d, 0e c3 (not sorted, as it is sorted by rowid)

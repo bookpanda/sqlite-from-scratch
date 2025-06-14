@@ -18,15 +18,15 @@ int main(int argc, char *argv[])
     std::string database_file_path = argv[1];
     std::string command = argv[2];
 
+    std::ifstream database_file(database_file_path, std::ios::binary);
+    if (!database_file)
+    {
+        std::cerr << "Failed to open the database file" << std::endl;
+        return 1;
+    }
+
     if (command == ".dbinfo")
     {
-        std::ifstream database_file(database_file_path, std::ios::binary);
-        if (!database_file)
-        {
-            std::cerr << "Failed to open the database file" << std::endl;
-            return 1;
-        }
-
         // seekg() overrides the current position in the file
         // read() moves the current position forward by the number of bytes read
 
@@ -47,6 +47,8 @@ int main(int argc, char *argv[])
     }
     else if (command == ".tables")
     {
+        int offset = 100; // db header offset
+        char buffer[1];
     }
 
     return 0;
