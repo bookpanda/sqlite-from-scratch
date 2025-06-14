@@ -29,3 +29,13 @@ download them by running this script:
 ```sh
 ./download_sample_databases.sh
 ```
+
+## Endians
+e.g. we have number 0x1234
+### Big-endian
+- byte[0] = 0x12
+- byte[1] = 0x34
+- SQLite uses big-endian for all integers in the file format.
+### Little-endian
+- byte[0] = 0x34
+- byte[1] = 0x12
