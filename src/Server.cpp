@@ -45,6 +45,9 @@ int main(int argc, char *argv[])
         unsigned int page_count = ((static_cast<unsigned char>(buffer2[1])) | (static_cast<unsigned char>(buffer2[0]) << 8));
         std::cout << "number of tables: " << page_count << std::endl;
     }
+    else if (command == ".tables")
+    {
+    }
 
     return 0;
 }

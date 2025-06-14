@@ -42,3 +42,79 @@ e.g. we have number 0x1234
 ### Little-endian
 - byte[0] = 0x34
 - byte[1] = 0x12
+
+## Varints encoding
+1. break binary number into 7-bit chunks
+2. add highest bit (MSB) to each chunk to show:
+- 1xxx xxxx = more chunks follow
+- 0xxx xxxx = this is the last chunk
+#### decoding varints: 0x1b
+- 0x1b = 0001 1011
+- break into 7-bit chunks: "0"001 1011
+- value = 16 + 8 + 2 + 1 = 27
+#### decoding varints: 0x81 0x47
+- "1"000 0001  "0"100 0111
+- value = 128 + 64 + 4 + 2 + 1 = 199 (skip the MSB when counting power of 2)
+
+## Structure
+A b-tree page is divided into regions in the following order:
+1. The 100-byte database file header (found on page 1 only)
+2. The 8 or 12 byte b-tree page header
+3. The cell pointer array
+4. Unallocated space
+5. The cell content area
+6. The reserved region
+
+### Cell 
+1. The size of the record, in bytes (varint)
+2. The rowid (varint)
+3. The record (record format)
+
+### Record
+1. Header:
+   - Size of the header, including this value (varint)
+   - Serial type code for each column in the record, in order (varint)
+2. Body:
+   - The value of each column in the record, in order (format varies based on serial type code)
+
+### Cell from page 1 of sample.db
+```bash
+00000ec0           78 03 07 17 1b  1b 01 81 47 74 61 62 6c  |   x.......Gtabl|
+00000ed0  65 6f 72 61 6e 67 65 73  6f 72 61 6e 67 65 73 04  |eorangesoranges.|
+00000ee0  43 52 45 41 54 45 20 54  41 42 4c 45 20 6f 72 61  |CREATE TABLE ora|
+00000ef0  6e 67 65 73 0a 28 0a 09  69 64 20 69 6e 74 65 67  |nges.(..id integ|
+00000f00  65 72 20 70 72 69 6d 61  72 79 20 6b 65 79 20 61  |er primary key a|
+00000f10  75 74 6f 69 6e 63 72 65  6d 65 6e 74 2c 0a 09 6e  |utoincrement,..n|
+00000f20  61 6d 65 20 74 65 78 74  2c 0a 09 64 65 73 63 72  |ame text,..descr|
+00000f30  69 70 74 69 6f 6e 20 74  65 78 74 0a 29           |iption text.)   |
+
+// Size of the record (varint): 120 = 7 + 5 + 7 + 7 + 1 + 93
+78
+
+// The rowid (safe to ignore)
+03
+
+// Record header
+07     // Size of record header (varint): 7
+
+17     // Serial type for sqlite_schema.type (varint):     23
+       // Size of sqlite_schema.type =                     (23-13)/2 = 5
+
+1b     // Serial type for sqlite_schema.name (varint):     27
+       // Size of sqlite_schema.name =                     (27-13)/2 = 7
+
+1b     // Serial type for sqlite_schema.tbl_name (varint): 27
+       // Size of sqlite_schema.tbl_name =                 (27-13)/2 = 7
+
+01     // Serial type for sqlite_schema.rootpage (varint): 1
+       // 8-bit twos-complement integer
+
+81 47  // Serial type for sqlite_schema.sql (varint):      199
+       // Size of sqlite_schema.sql =                      (199-13)/2 = 93
+
+// Record body
+74 61 62 6c 65        // Value of sqlite_schema.type:     "table"
+6f 72 61 6e 67 65 73  // Value of sqlite_schema.name:     "oranges"
+6f 72 61 6e 67 65 73  // Value of sqlite_schema.tbl_name: "oranges"  <---
+...
+```
