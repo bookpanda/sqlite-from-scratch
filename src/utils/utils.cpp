@@ -47,12 +47,16 @@ uint8_t check_page_header_size(std::ifstream &file)
     }
 }
 
-uint16_t check_2_bytes(std::ifstream &file)
+uint64_t check_bytes(std::ifstream &file, uint64_t size)
 {
-    uint8_t bytes[2];
-    file.read(reinterpret_cast<char *>(bytes), 2);
-
-    return (static_cast<uint16_t>(bytes[0]) << 8) | bytes[1];
+    uint8_t bytes[size];
+    file.read(reinterpret_cast<char *>(bytes), size);
+    uint64_t value = 0;
+    for (uint64_t i = 0; i < size; ++i)
+    {
+        value = (value << 8) | bytes[i];
+    }
+    return value;
 }
 
 uint64_t read_serial_type_size(std::ifstream &file)

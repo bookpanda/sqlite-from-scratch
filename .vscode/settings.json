@@ -41,6 +41,15 @@
         "tuple": "cpp",
         "typeinfo": "cpp",
         "variant": "cpp",
-        "algorithm": "cpp"
+        "algorithm": "cpp",
+        "__split_buffer": "cpp",
+        "array": "cpp",
+        "filesystem": "cpp",
+        "iterator": "cpp",
+        "memory": "cpp",
+        "utility": "cpp",
+        "vector": "cpp",
+        "memory_resource": "cpp",
+        "sstream": "cpp"
     }
 }

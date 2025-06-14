@@ -22,10 +22,10 @@ int main(int argc, char *argv[])
     std::string database_file_path = argv[1];
     std::string command = argv[2];
 
-    std::ifstream database_file(database_file_path, std::ios::binary);
-    if (!database_file)
+    database_file = std::ifstream(database_file_path, std::ios::binary);
+    if (!database_file.is_open())
     {
-        std::cerr << "Failed to open the database file" << std::endl;
+        std::cerr << "Failed to open the database file: " << database_file_path << std::endl;
         return 1;
     }
 
@@ -36,7 +36,7 @@ int main(int argc, char *argv[])
     // "SQLite format 3\0"
     database_file.seekg(16);
     // page size is stored in the next 2 bytes
-    page_size = check_2_bytes(database_file);
+    page_size = check_bytes(database_file, 2);
 
     if (command == ".dbinfo")
     {
