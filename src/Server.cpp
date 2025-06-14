@@ -27,15 +27,23 @@ int main(int argc, char *argv[])
             return 1;
         }
 
-        // skip the first 16 bytes of the header, it is "magic header"
-        // "SQLite format 3"
-        database_file.seekg(16);
+        // seekg() overrides the current position in the file
+        // read() moves the current position forward by the number of bytes read
 
+        // skip the first 16 bytes of the header, it is "magic header"
+        // "SQLite format 3\0"
+        database_file.seekg(16);
         // page size is stored in the next 2 bytes
         char buffer[2];
         database_file.read(buffer, 2);
         unsigned short page_size = (static_cast<unsigned char>(buffer[1]) | (static_cast<unsigned char>(buffer[0]) << 8));
         std::cout << "database page size: " << page_size << std::endl;
+
+        database_file.seekg(103);
+        char buffer2[2];
+        database_file.read(buffer2, 2);
+        unsigned int page_count = ((static_cast<unsigned char>(buffer2[1])) | (static_cast<unsigned char>(buffer2[0]) << 8));
+        std::cout << "number of tables: " << page_count << std::endl;
     }
 
     return 0;

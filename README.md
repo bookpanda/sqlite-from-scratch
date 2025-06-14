@@ -7,6 +7,9 @@ and more.
 ./your_program.sh ./sample.db .dbinfo
 
 # test with real sqlite
+hexdump -C sample.db
+sqlite3 sample.db "SELECT * FROM sqlite_schema;"
+
 sqlite3 sample.db "select * from apples"
 sqlite3 sample.db "select * from oranges"
 sqlite3 sample.db "select id, name from apples"
