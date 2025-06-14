@@ -30,12 +30,12 @@ std::vector<Table> get_tables(std::ifstream &database_file)
 {
     int offset = 100; // db header offset
     database_file.seekg(offset);
-    uint8_t header_size = check_page_header_size(database_file);
+    uint8_t page_header_size = check_page_header_size(database_file);
 
     database_file.seekg(offset + 3);
     uint16_t cell_count = check_2_bytes(database_file);
 
-    offset += header_size;
+    offset += page_header_size;
     std::vector<Table> tables;
 
     for (uint16_t i = 0; i < cell_count; ++i)

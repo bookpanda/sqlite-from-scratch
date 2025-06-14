@@ -4,6 +4,7 @@
 #include <vector>
 #include "utils/utils.hpp"
 #include "table.hpp"
+#include "globals.hpp"
 
 int main(int argc, char *argv[])
 {
@@ -28,18 +29,17 @@ int main(int argc, char *argv[])
         return 1;
     }
 
+    // seekg() overrides the current position in the file
+    // read() moves the current position forward by the number of bytes read
+
+    // skip the first 16 bytes of the header, it is "magic header"
+    // "SQLite format 3\0"
+    database_file.seekg(16);
+    // page size is stored in the next 2 bytes
+    page_size = check_2_bytes(database_file);
+
     if (command == ".dbinfo")
     {
-        // seekg() overrides the current position in the file
-        // read() moves the current position forward by the number of bytes read
-
-        // skip the first 16 bytes of the header, it is "magic header"
-        // "SQLite format 3\0"
-        database_file.seekg(16);
-        // page size is stored in the next 2 bytes
-        char buffer[2];
-        database_file.read(buffer, 2);
-        unsigned short page_size = (static_cast<unsigned char>(buffer[1]) | (static_cast<unsigned char>(buffer[0]) << 8));
         std::cout << "database page size: " << page_size << std::endl;
 
         database_file.seekg(103);
