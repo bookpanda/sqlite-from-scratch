@@ -37,6 +37,7 @@ int main(int argc, char *argv[])
     database_file.seekg(16);
     // page size is stored in the next 2 bytes
     page_size = check_bytes(database_file, 2);
+    auto tables = get_tables(database_file);
 
     if (command == ".dbinfo")
     {
@@ -50,12 +51,25 @@ int main(int argc, char *argv[])
     }
     else if (command == ".tables")
     {
-        auto tables = get_tables(database_file);
         for (const auto &table : tables)
         {
             if (table.tbl_name != "sqlite_sequence" && !table.tbl_name.empty())
             {
                 std::cout << table.tbl_name << " ";
+            }
+        }
+    }
+    else
+    {
+        auto parts = split_by_delim(command, " ");
+        auto selectedTable = parts.back();
+
+        for (const auto &table : tables)
+        {
+            if (table.tbl_name == selectedTable)
+            {
+                std::cout << table.size() << std::endl;
+                break;
             }
         }
     }

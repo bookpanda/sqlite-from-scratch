@@ -9,7 +9,7 @@ Table::Table(const std::string &type,
              const std::string &sql)
     : type(type), name(name), tbl_name(tbl_name), rootpage(rootpage), sql(sql)
 {
-    database_file.seekg((rootpage - 1) * page_size);
+    database_file.seekg((rootpage - 1) * page_size + 3); // offset 3 bytes from start of page header
     _size = check_bytes(database_file, 2);
 }
 
@@ -84,10 +84,10 @@ std::vector<Table> get_tables(std::ifstream &database_file)
         tables.emplace_back(type, name, tbl_name, rootpage, sql);
     }
 
-    for (const auto &table : tables)
-    {
-        table.print();
-    }
+    // for (const auto &table : tables)
+    // {
+    //     table.print();
+    // }
 
     return tables;
 }

@@ -5,10 +5,13 @@ and more.
 
 ```bash
 ./your_program.sh ./sample.db .dbinfo
+./your_program.sh ./sample.db .tables
+./your_program.sh sample.db "SELECT COUNT(*) FROM apples"
 
 # test with real sqlite
 hexdump -C sample.db
 sqlite3 sample.db "SELECT * FROM sqlite_schema;"
+sqlite3 sample.db "SELECT COUNT(*) FROM apples"
 
 sqlite3 sample.db "select * from apples"
 sqlite3 sample.db "select * from oranges"

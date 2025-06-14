@@ -104,3 +104,18 @@ uint64_t read_serial_type_size(std::ifstream &file)
         }
     }
 }
+
+std::vector<std::string> split_by_delim(const std::string &s, const std::string &delim)
+{
+    std::vector<std::string> result;
+    size_t pos = 0, prev = 0;
+
+    while ((pos = s.find(delim, prev)) != std::string::npos)
+    {
+        result.push_back(s.substr(prev, pos - prev));
+        prev = pos + delim.size();
+    }
+    result.push_back(s.substr(prev));
+
+    return result;
+}
