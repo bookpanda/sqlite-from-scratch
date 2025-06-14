@@ -1,56 +1,15 @@
-[![progress-banner](https://backend.codecrafters.io/progress/sqlite/b1edd80d-76d5-4728-96ec-3c7b0a5ad4c7)](https://app.codecrafters.io/users/codecrafters-bot?r=2qF)
-
-This is a starting point for C++ solutions to the
-["Build Your Own SQLite" Challenge](https://codecrafters.io/challenges/sqlite).
-
-In this challenge, you'll build a barebones SQLite implementation that supports
-basic SQL queries like `SELECT`. Along the way we'll learn about
-[SQLite's file format](https://www.sqlite.org/fileformat.html), how indexed data
-is
-[stored in B-trees](https://jvns.ca/blog/2014/10/02/how-does-sqlite-work-part-2-btrees/)
+# Building SQLite from scratch
+- [SQLite's file format](https://www.sqlite.org/fileformat.html)
+- how indexed data is [stored in B-trees](https://jvns.ca/blog/2014/10/02/how-does-sqlite-work-part-2-btrees/)
 and more.
 
-**Note**: If you're viewing this repo on GitHub, head over to
-[codecrafters.io](https://codecrafters.io) to try the challenge.
+```bash
+./your_program.sh ./sample.db .dbinfo
 
-# Passing the first stage
-
-The entry point for your SQLite implementation is in `src/Server.cpp`. Study and
-uncomment the relevant code, and push your changes to pass the first stage:
-
-```sh
-git commit -am "pass 1st stage" # any msg
-git push origin master
-```
-
-Time to move on to the next stage!
-
-# Stage 2 & beyond
-
-Note: This section is for stages 2 and beyond.
-
-1. Ensure you have `cmake` installed locally
-1. Run `./your_program.sh` to run your program, which is implemented in
-   `src/Server.cpp`.
-1. Commit your changes and run `git push origin master` to submit your solution
-   to CodeCrafters. Test output will be streamed to your terminal.
-
-# Sample Databases
-
-To make it easy to test queries locally, we've added a sample database in the
-root of this repository: `sample.db`.
-
-This contains two tables: `apples` & `oranges`. You can use this to test your
-implementation for the first 6 stages.
-
-You can explore this database by running queries against it like this:
-
-```sh
-$ sqlite3 sample.db "select id, name from apples"
-1|Granny Smith
-2|Fuji
-3|Honeycrisp
-4|Golden Delicious
+# test with real sqlite
+sqlite3 sample.db "select * from apples"
+sqlite3 sample.db "select * from oranges"
+sqlite3 sample.db "select id, name from apples"
 ```
 
 There are two other databases that you can use:
@@ -70,7 +29,3 @@ download them by running this script:
 ```sh
 ./download_sample_databases.sh
 ```
-
-If the script doesn't work for some reason, you can download the databases
-directly from
-[codecrafters-io/sample-sqlite-databases](https://github.com/codecrafters-io/sample-sqlite-databases).

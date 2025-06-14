@@ -4,11 +4,9 @@
 
 int main(int argc, char *argv[])
 {
-    // Flush after every std::cout / std::cerr
     std::cout << std::unitbuf;
     std::cerr << std::unitbuf;
 
-    // You can use print statements as follows for debugging, they'll be visible when running tests.
     std::cerr << "Logs from your program will appear here" << std::endl;
 
     if (argc != 3)
@@ -29,7 +27,6 @@ int main(int argc, char *argv[])
             return 1;
         }
 
-        // Uncomment this to pass the first stage
         database_file.seekg(16); // Skip the first 16 bytes of the header
 
         char buffer[2];
