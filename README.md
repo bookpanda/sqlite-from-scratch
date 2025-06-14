@@ -135,7 +135,7 @@ A b-tree page is divided into regions in the following order:
 00000080  00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00  |................|
 *
 00000ec0  00 00 00|78|03|07 17 1b  1b 01 81 47|74 61 62 6c  |...x.......Gtabl|
-00000ed0  65 6f 72 61 6e 67 65 73  6f 72 61 6e 67 65 73 04  |eorangesoranges.|
+00000ed0  65|6f 72 61 6e 67 65 73 |6f 72 61 6e 67 65 73|04| |eorangesoranges.|
 00000ee0  43 52 45 41 54 45 20 54  41 42 4c 45 20 6f 72 61  |CREATE TABLE ora|
 00000ef0  6e 67 65 73 0a 28 0a 09  69 64 20 69 6e 74 65 67  |nges.(..id integ|
 00000f00  65 72 20 70 72 69 6d 61  72 79 20 6b 65 79 20 61  |er primary key a|
