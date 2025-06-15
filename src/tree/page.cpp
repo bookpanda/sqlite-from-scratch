@@ -37,8 +37,9 @@ void traverse_leaf_page(Table &table, uint32_t file_offset, uint16_t cell_count)
 
             if (column.type == "integer")
             {
-                int64_t value = check_bytes(database_file, data_size);
-                row[column.name] = value;
+                // int64_t value = check_bytes(database_file, data_size);
+                // row[column.name] = value;
+                row[column.name] = rowid;
             }
             else if (column.type == "text")
             {
@@ -71,7 +72,7 @@ std::vector<ChildPage> traverse_interior_page(Table &table, uint32_t file_offset
         database_file.seekg(file_offset + cell_offset);
         uint32_t left_child_page = check_bytes(database_file, 4);
         uint64_t rowid = read_varint(database_file);
-        // std::cout << "Row " << i << ": " << std::endl;
+        // std::cout << "Cell " << i << ": " << std::endl;
         // std::cout << "  Row ID: " << rowid << std::endl;
         // std::cout << "  Left Child Page: " << left_child_page << std::endl;
         child_pages.push_back({left_child_page, rowid});
@@ -80,4 +81,6 @@ std::vector<ChildPage> traverse_interior_page(Table &table, uint32_t file_offset
     database_file.seekg(file_offset + LEAF_PAGE_HEADER_SIZE);
     uint32_t rightmost_page = check_bytes(database_file, 4);
     child_pages.push_back({rightmost_page, 0});
+
+    return child_pages;
 }

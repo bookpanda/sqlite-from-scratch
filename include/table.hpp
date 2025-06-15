@@ -8,7 +8,7 @@
 #include <variant>
 #include "column.hpp"
 
-using Cell = std::variant<int64_t, double, std::string, std::nullptr_t>;
+using Cell = std::variant<int64_t, uint64_t, double, std::string, std::nullptr_t>;
 using Row = std::unordered_map<std::string, Cell>;
 
 class Table

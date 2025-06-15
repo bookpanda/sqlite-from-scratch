@@ -46,29 +46,29 @@ void Table::print() const
         std::cout << "    " << col.name << " (" << col.type << ")" << std::endl;
     }
 
-    if (_fetched)
-    {
-        std::cout << "  Rows: " << std::endl;
-        for (const auto &row : rows)
-        {
-            for (const auto &col : columns)
-            {
-                if (row.find(col.name) != row.end())
-                {
-                    const Cell &cell = row.at(col.name);
-                    if (std::holds_alternative<int64_t>(cell))
-                        std::cout << col.name << ": " << std::get<int64_t>(cell) << ", ";
-                    else if (std::holds_alternative<double>(cell))
-                        std::cout << col.name << ": " << std::get<double>(cell) << ", ";
-                    else if (std::holds_alternative<std::string>(cell))
-                        std::cout << col.name << ": " << std::get<std::string>(cell) << ", ";
-                    else
-                        std::cout << col.name << ": NULL, ";
-                }
-            }
-            std::cout << std::endl;
-        }
-    }
+    // if (_fetched)
+    // {
+    //     std::cout << "  Rows: " << std::endl;
+    //     for (const auto &row : rows)
+    //     {
+    //         for (const auto &col : columns)
+    //         {
+    //             if (row.find(col.name) != row.end())
+    //             {
+    //                 const Cell &cell = row.at(col.name);
+    //                 if (std::holds_alternative<int64_t>(cell))
+    //                     std::cout << col.name << ": " << std::get<int64_t>(cell) << ", ";
+    //                 else if (std::holds_alternative<double>(cell))
+    //                     std::cout << col.name << ": " << std::get<double>(cell) << ", ";
+    //                 else if (std::holds_alternative<std::string>(cell))
+    //                     std::cout << col.name << ": " << std::get<std::string>(cell) << ", ";
+    //                 else
+    //                     std::cout << col.name << ": NULL, ";
+    //             }
+    //         }
+    //         std::cout << std::endl;
+    //     }
+    // }
 }
 
 std::vector<Table> get_tables(std::ifstream &database_file)

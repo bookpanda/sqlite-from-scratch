@@ -92,7 +92,11 @@ void print_query_result(const Table &table, const ParsedQuery query)
                 continue;
             if (std::holds_alternative<std::nullptr_t>(row.at(col)))
                 std::cout << "NULL" << std::endl;
-            else
+            else if (std::holds_alternative<int64_t>(row.at(col)))
+                rowResult.push_back(std::to_string(std::get<int64_t>(row.at(col))));
+            else if (std::holds_alternative<uint64_t>(row.at(col)))
+                rowResult.push_back(std::to_string(std::get<uint64_t>(row.at(col))));
+            else if (std::holds_alternative<std::string>(row.at(col)))
                 rowResult.push_back(std::get<std::string>(row.at(col)));
         }
 

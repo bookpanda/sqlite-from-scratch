@@ -78,7 +78,7 @@ int main(int argc, char *argv[])
             if (table.tbl_name == selectedTable)
             {
                 table.fetch_data();
-                // table.print();
+                table.print();
                 if (query.columns.size() == 1)
                 {
                     if (to_uppercase(query.columns[0]) == "COUNT(*)")
