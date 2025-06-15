@@ -4,4 +4,4 @@
 #include <fstream>
 #include "table.hpp"
 
-void traverse_leaf_page(Table &table, uint32_t file_offset);
+void traverse_leaf_page(Table &table, uint32_t file_offset, uint16_t cell_count);

@@ -34,7 +34,6 @@ public:
     void fetch_data();
 
 private:
-    uint16_t _size;
     bool _fetched = false;
 };
 

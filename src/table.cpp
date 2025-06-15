@@ -10,15 +10,13 @@ Table::Table(const std::string &type,
              const std::string &sql)
     : type(type), name(name), tbl_name(tbl_name), rootpage(rootpage), sql(sql)
 {
-    database_file.seekg((rootpage - 1) * page_size + 3); // offset 3 bytes from start of page header
-    _size = check_bytes(database_file, 2);
     columns = parse_create_table(sql);
-    rows.resize(_size);
+    rows = std::vector<Row>(0); // empty vector
 }
 
 size_t Table::size() const
 {
-    return _size;
+    return rows.size();
 }
 
 void Table::fetch_data()

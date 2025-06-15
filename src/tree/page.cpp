@@ -5,9 +5,9 @@
 const uint8_t LEAF_PAGE_HEADER_SIZE = 8;
 const uint8_t INTERIOR_PAGE_HEADER_SIZE = 12;
 
-void traverse_leaf_page(Table &table, uint32_t file_offset)
+void traverse_leaf_page(Table &table, uint32_t file_offset, uint16_t cell_count)
 {
-    for (uint16_t i = 0; i < table.size(); ++i)
+    for (uint16_t i = 0; i < cell_count; ++i)
     {
         database_file.seekg(file_offset + LEAF_PAGE_HEADER_SIZE + i * 2);
         uint16_t cell_offset = check_bytes(database_file, 2);
@@ -28,6 +28,7 @@ void traverse_leaf_page(Table &table, uint32_t file_offset)
             column_sizes.push_back(data_size);
         }
 
+        Row row = {};
         for (size_t j = 0; j < table.columns.size(); ++j)
         {
             const auto &column = table.columns[j];
@@ -37,23 +38,24 @@ void traverse_leaf_page(Table &table, uint32_t file_offset)
             if (column.type == "integer")
             {
                 int64_t value = check_bytes(database_file, data_size);
-                table.rows[i][column.name] = value;
+                row[column.name] = value;
             }
             else if (column.type == "text")
             {
                 std::string value = read_string(database_file, data_size);
-                table.rows[i][column.name] = value;
+                row[column.name] = value;
             }
             else if (column.type == "real")
             {
                 double value = *reinterpret_cast<double *>(new char[data_size]);
                 database_file.read(reinterpret_cast<char *>(&value), data_size);
-                table.rows[i][column.name] = value;
+                row[column.name] = value;
             }
             else
             {
-                table.rows[i][column.name] = nullptr; // placeholder for unsupported types
+                row[column.name] = nullptr; // placeholder for unsupported types
             }
         }
+        table.rows.push_back(row);
     }
 }
