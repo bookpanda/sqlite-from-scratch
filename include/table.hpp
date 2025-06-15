@@ -4,6 +4,12 @@
 #include <vector>
 #include <fstream>
 #include <cstdint>
+#include <unordered_map>
+#include <variant>
+#include "column.hpp"
+
+using Cell = std::variant<int64_t, double, std::string, std::nullptr_t>;
+using Row = std::unordered_map<std::string, Cell>;
 
 class Table
 {
@@ -23,9 +29,13 @@ public:
 
     void print() const;
     int size() const;
+    void fetch_data();
 
 private:
-    int _size;
+    uint16_t _size;
+    std::vector<Row> _rows;
+    std::vector<Column> _columns;
+    bool _fetched = false;
 };
 
 std::vector<Table> get_tables(std::ifstream &file);
