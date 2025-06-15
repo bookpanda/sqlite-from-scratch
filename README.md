@@ -168,3 +168,7 @@ A b-tree page is divided into regions in the following order:
 - left page's cell: stores record
 - interior page header has 12 bytes (add rightmost pointer)
 - left page's cell: key (rowid) and the pointer to its immediate left (in B-tree node diagram)
+
+### Indexes
+- For a page, scan all cells, compare if the value matches what we're looking for
+- For pointers, only recursively follow the pointers in range

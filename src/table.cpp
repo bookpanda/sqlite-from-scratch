@@ -33,6 +33,14 @@ void Table::fetch_data()
 
 void Table::fetch_data_with_index(uint64_t index_page)
 {
+    if (_fetched)
+    {
+        std::cout << "Data already fetched for table: " << tbl_name << std::endl;
+        return;
+    }
+    traverse_index_tree(*this, index_page);
+
+    _fetched = true;
 }
 
 void Table::print() const

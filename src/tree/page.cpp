@@ -2,9 +2,6 @@
 #include "globals.hpp"
 #include "utils/utils.hpp"
 
-const uint8_t LEAF_PAGE_HEADER_SIZE = 8;
-const uint8_t INTERIOR_PAGE_HEADER_SIZE = 12;
-
 void traverse_leaf_page(Table &table, uint32_t file_offset, uint16_t cell_count)
 {
     for (uint16_t i = 0; i < cell_count; ++i)

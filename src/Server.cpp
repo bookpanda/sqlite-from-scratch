@@ -67,21 +67,26 @@ int main(int argc, char *argv[])
         auto indexes = get_indexes(tables);
         auto query = parse_sql(command);
         auto selectedTable = query.table;
-        // std::cout << "Selected table: " << selectedTable << std::endl;
-        // std::cout << "Columns: ";
-        // for (const auto &col : query.columns)
-        // {
-        //     std::cout << col << ", ";
-        // }
-        // std::cout << std::endl;
-        // std::cout << "Where clause: " << query.where_clause << std::endl;
+        std::cout << "Selected table: " << selectedTable << std::endl;
+        std::cout << "Columns: ";
+        for (const auto &col : query.columns)
+        {
+            std::cout << col << ", ";
+        }
+        std::cout << std::endl;
+        std::cout << "Where: " << query.where_col << " = " << query.where_val << std::endl;
+        std::cout << "Indexes: " << std::endl;
+        for (const auto &index : indexes)
+        {
+            std::cout << "  " << index.first << ": " << index.second << std::endl;
+        }
 
         for (auto &table : tables)
         {
             if (table.tbl_name != selectedTable)
                 continue;
 
-            if (indexes.find(table.name) != indexes.end())
+            if (indexes.find(query.where_col) != indexes.end())
             {
                 // fetch using index, populate table's rows
                 table.fetch_data_with_index(indexes[query.where_col]);
