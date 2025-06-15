@@ -6,6 +6,7 @@
 #include "table.hpp"
 #include "globals.hpp"
 #include "query.hpp"
+#include "tree/index.hpp"
 
 int main(int argc, char *argv[])
 {
@@ -57,12 +58,13 @@ int main(int argc, char *argv[])
             if (table.tbl_name != "sqlite_sequence" && !table.tbl_name.empty())
             {
                 std::cout << table.tbl_name << " ";
-                // std::cout << table.name << std::endl; // print table name
+                // std::cout << table.name << ", " << table.type << std::endl; // print table name
             }
         }
     }
     else
     {
+        auto indexes = get_indexes(tables);
         auto query = parse_sql(command);
         auto selectedTable = query.table;
         // std::cout << "Selected table: " << selectedTable << std::endl;
@@ -76,21 +78,28 @@ int main(int argc, char *argv[])
 
         for (auto &table : tables)
         {
-            if (table.tbl_name == selectedTable)
+            if (table.tbl_name != selectedTable)
+                continue;
+
+            // if (indexes.find(table.name) != indexes.end())
+            // {
+            // }
+            // else
+            // {
+            table.fetch_data();
+            // }
+            // table.print();
+
+            if (query.columns.size() == 1)
             {
-                table.fetch_data();
-                // table.print();
-                if (query.columns.size() == 1)
-                {
-                    if (to_uppercase(query.columns[0]) == "COUNT(*)")
-                        std::cout << table.size() << std::endl;
-                    else
-                        print_query_result(table, query);
-                    break;
-                }
-                print_query_result(table, query);
+                if (to_uppercase(query.columns[0]) == "COUNT(*)")
+                    std::cout << table.size() << std::endl;
+                else
+                    print_query_result(table, query);
                 break;
             }
+            print_query_result(table, query);
+            break;
         }
     }
 

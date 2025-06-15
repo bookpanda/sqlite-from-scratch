@@ -42,7 +42,20 @@ ParsedQuery parse_sql(const std::string &query)
         result.table = match[2];
         if (match.size() > 3 && match[3].matched)
         {
-            result.where_clause = match[3];
+            std::string where_clause = match[3];
+            std::string where_col, where_val;
+            std::regex where_regex(R"((\w+)\s*=\s*'(.*?)')", std::regex_constants::icase);
+            std::smatch where_match;
+
+            if (std::regex_search(where_clause, where_match, where_regex))
+            {
+                result.where_col = where_match[1];
+                result.where_val = where_match[2];
+            }
+            else
+            {
+                std::cerr << "Unsupported WHERE clause format: " << where_clause << std::endl;
+            }
         }
     }
     return result;
@@ -50,38 +63,20 @@ ParsedQuery parse_sql(const std::string &query)
 
 void print_query_result(const Table &table, const ParsedQuery query)
 {
-    std::string where_col, where_val;
-    bool has_where = !query.where_clause.empty();
-
-    if (has_where)
-    {
-        std::regex where_regex(R"((\w+)\s*=\s*'(.*?)')", std::regex_constants::icase);
-        std::smatch where_match;
-
-        if (std::regex_search(query.where_clause, where_match, where_regex))
-        {
-            where_col = where_match[1];
-            where_val = where_match[2];
-        }
-        else
-        {
-            std::cerr << "Unsupported WHERE clause format: " << query.where_clause << std::endl;
-            return;
-        }
-    }
+    bool has_where = !query.where_col.empty();
 
     for (auto &row : table.rows)
     {
         // apply WHERE clause filter
         if (has_where)
         {
-            auto it = row.find(where_col);
+            auto it = row.find(query.where_col);
             if (it == row.end())
                 continue;
 
             // reject if is NULL or does not match the value
             if (std::holds_alternative<std::nullptr_t>(it->second) ||
-                std::get<std::string>(it->second) != where_val)
+                std::get<std::string>(it->second) != query.where_val)
                 continue;
         }
 
