@@ -2,6 +2,7 @@
 
 #include <string>
 #include <vector>
+#include "table.hpp"
 
 struct ParsedQuery
 {
@@ -11,3 +12,4 @@ struct ParsedQuery
 };
 
 ParsedQuery parse_sql(const std::string &query);
+void print_query_result(const Table &table, const ParsedQuery query);

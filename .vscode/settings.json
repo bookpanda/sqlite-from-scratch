@@ -50,6 +50,7 @@
         "utility": "cpp",
         "vector": "cpp",
         "memory_resource": "cpp",
-        "sstream": "cpp"
+        "sstream": "cpp",
+        "unordered_map": "cpp"
     }
 }

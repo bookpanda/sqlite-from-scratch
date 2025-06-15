@@ -64,13 +64,14 @@ int main(int argc, char *argv[])
     {
         auto query = parse_sql(command);
         auto selectedTable = query.table;
-        // std::cout << "Selected table: " << selectedTable << std::endl;
-        // std::cout << "Columns: ";
-        // for (const auto &col : query.columns)
-        // {
-        //     std::cout << col << ", ";
-        // }
-        // std::cout << std::endl;
+        std::cout << "Selected table: " << selectedTable << std::endl;
+        std::cout << "Columns: ";
+        for (const auto &col : query.columns)
+        {
+            std::cout << col << ", ";
+        }
+        std::cout << std::endl;
+        std::cout << "Where clause: " << query.where_clause << std::endl;
 
         for (auto &table : tables)
         {
@@ -83,38 +84,10 @@ int main(int argc, char *argv[])
                     if (to_uppercase(query.columns[0]) == "COUNT(*)")
                         std::cout << table.size() << std::endl;
                     else
-                        for (auto &row : table.rows)
-                        {
-                            if (row.find(query.columns[0]) == row.end())
-                                continue;
-                            std::cout << std::get<std::string>(row[query.columns[0]]) << std::endl;
-                        }
-
+                        print_query_result(table, query);
                     break;
                 }
-
-                for (auto &row : table.rows)
-                {
-                    std::vector<std::string> rowResult;
-                    for (auto &col : query.columns)
-                    {
-                        if (row.find(col) == row.end())
-                            continue;
-                        if (std::holds_alternative<std::nullptr_t>(row[col]))
-                            std::cout << "NULL" << std::endl;
-                        else
-                            rowResult.push_back(std::get<std::string>(row[col]));
-                    }
-
-                    for (size_t i = 0; i < rowResult.size(); ++i)
-                    {
-                        std::cout << rowResult[i];
-                        if (i < rowResult.size() - 1)
-                            std::cout << "|";
-                    }
-                    std::cout << std::endl;
-                }
-
+                print_query_result(table, query);
                 break;
             }
         }

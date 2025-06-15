@@ -10,6 +10,7 @@ and more.
 ./your_program.sh sample.db "SELECT name FROM apples"
 ./your_program.sh sample.db "select count(*) from apples"
 ./your_program.sh sample.db "SELECT name, color FROM apples"
+./your_program.sh sample.db "SELECT name, color FROM apples WHERE color = 'Yellow'"
 
 # test with real sqlite
 hexdump -C sample.db

@@ -2,6 +2,7 @@
 #include <regex>
 #include <sstream>
 #include "query.hpp"
+#include "table.hpp"
 
 ParsedQuery parse_sql(const std::string &query)
 {
@@ -45,4 +46,29 @@ ParsedQuery parse_sql(const std::string &query)
         }
     }
     return result;
+}
+
+void print_query_result(const Table &table, const ParsedQuery query)
+{
+    for (auto &row : table.rows)
+    {
+        std::vector<std::string> rowResult;
+        for (auto &col : query.columns)
+        {
+            if (row.find(col) == row.end())
+                continue;
+            if (std::holds_alternative<std::nullptr_t>(row.at(col)))
+                std::cout << "NULL" << std::endl;
+            else
+                rowResult.push_back(std::get<std::string>(row.at(col)));
+        }
+
+        for (size_t i = 0; i < rowResult.size(); ++i)
+        {
+            std::cout << rowResult[i];
+            if (i < rowResult.size() - 1)
+                std::cout << "|";
+        }
+        std::cout << std::endl;
+    }
 }
