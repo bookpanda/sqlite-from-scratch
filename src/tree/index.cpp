@@ -32,7 +32,7 @@ void traverse_index_leaf_page(Table &table, uint32_t file_offset, uint16_t cell_
         uint64_t key_size = read_serial_type_size(database_file);
         uint64_t rowid_size = read_serial_type_size(database_file);
         std::string key = read_string(database_file, key_size);
-        uint64_t rowid = read_varint(database_file);
+        uint64_t rowid = check_bytes(database_file, rowid_size);
         if (key == where_val)
         {
             table.rows.push_back({{"rowid", rowid}});
@@ -61,7 +61,7 @@ std::vector<IndexChildPage> traverse_index_interior_page(Table &table, uint32_t 
         uint64_t key_size = read_serial_type_size(database_file);
         uint64_t rowid_size = read_serial_type_size(database_file);
         std::string key = read_string(database_file, key_size);
-        uint64_t rowid = read_varint(database_file);
+        uint64_t rowid = check_bytes(database_file, rowid_size);
         if (key == where_val)
         {
             table.rows.push_back({{"rowid", rowid}});
