@@ -2,6 +2,7 @@
 - [SQLite's file format](https://www.sqlite.org/fileformat.html)
 - how indexed data is [stored in B-trees](https://jvns.ca/blog/2014/10/02/how-does-sqlite-work-part-2-btrees/)
 and more.
+- [SQLIte database file format diagrams](https://saveriomiroddi.github.io/SQLIte-database-file-format-diagrams/)
 
 ```bash
 ./your_program.sh ./sample.db .dbinfo
@@ -12,7 +13,8 @@ and more.
 ./your_program.sh sample.db "SELECT name, color FROM apples"
 ./your_program.sh sample.db "SELECT name, color FROM apples WHERE color = 'Yellow'"
 ./your_program.sh superheroes.db "SELECT id, name FROM superheroes WHERE eye_color = 'Pink Eyes'"
-./your_program.sh superheroes.db "SELECT id, name FROM superheroes"
+./your_program.sh ./companies.db .tables
+./your_program.sh companies.db "SELECT id, name FROM companies WHERE country = 'eritrea'"
 
 # test with real sqlite
 hexdump -C sample.db

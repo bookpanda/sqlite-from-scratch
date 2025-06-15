@@ -57,6 +57,7 @@ int main(int argc, char *argv[])
             if (table.tbl_name != "sqlite_sequence" && !table.tbl_name.empty())
             {
                 std::cout << table.tbl_name << " ";
+                // std::cout << table.name << std::endl; // print table name
             }
         }
     }
