@@ -19,28 +19,28 @@ size_t Table::size() const
     return rows.size();
 }
 
-void Table::fetch_data()
+void Table::fetch_data(uint64_t rowid)
 {
-    if (_fetched)
-    {
-        std::cout << "Data already fetched for table: " << tbl_name << std::endl;
-        return;
-    }
-    traverse_tree(*this, rootpage);
+    // if (_fetched)
+    // {
+    //     std::cout << "Data already fetched for table: " << tbl_name << std::endl;
+    //     return;
+    // }
+    traverse_tree(*this, rootpage, rowid);
 
-    _fetched = true;
+    // _fetched = true;
 }
 
 void Table::fetch_data_with_index(uint64_t index_page, std::string where_val)
 {
-    if (_fetched)
-    {
-        std::cout << "Data already fetched for table: " << tbl_name << std::endl;
-        return;
-    }
+    // if (_fetched)
+    // {
+    //     std::cout << "Data already fetched for table: " << tbl_name << std::endl;
+    //     return;
+    // }
     traverse_index_tree(*this, index_page, where_val);
 
-    _fetched = true;
+    // _fetched = true;
 }
 
 void Table::print() const

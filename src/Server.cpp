@@ -7,6 +7,7 @@
 #include "globals.hpp"
 #include "query.hpp"
 #include "tree/index.hpp"
+#include <algorithm>
 
 int main(int argc, char *argv[])
 {
@@ -67,49 +68,53 @@ int main(int argc, char *argv[])
         auto indexes = get_indexes(tables);
         auto query = parse_sql(command);
         auto selectedTable = query.table;
-        std::cout << "Selected table: " << selectedTable << std::endl;
-        std::cout << "Columns: ";
-        for (const auto &col : query.columns)
-        {
-            std::cout << col << ", ";
-        }
-        std::cout << std::endl;
-        std::cout << "Where: " << query.where_col << " = " << query.where_val << std::endl;
-        std::cout << "Indexes: " << std::endl;
-        for (const auto &index : indexes)
-        {
-            std::cout << "  " << index.first << ": " << index.second << std::endl;
-        }
+        // std::cout << "Selected table: " << selectedTable << std::endl;
+        // std::cout << "Columns: ";
+        // for (const auto &col : query.columns)
+        // {
+        //     std::cout << col << ", ";
+        // }
+        // std::cout << std::endl;
+        // std::cout << "Where: " << query.where_col << " = " << query.where_val << std::endl;
+        // std::cout << "Indexes: " << std::endl;
+        // for (const auto &index : indexes)
+        // {
+        //     std::cout << "  " << index.first << ": " << index.second << std::endl;
+        // }
 
         for (auto &table : tables)
         {
             if (table.tbl_name != selectedTable)
                 continue;
 
-            table.print();
+            // table.print();
             if (indexes.find(query.where_col) != indexes.end())
             {
                 // fetch using index, populate table's rows
                 table.fetch_data_with_index(indexes[query.where_col], query.where_val);
-                std::cout << "Rows fetched using index: " << table.rows.size() << std::endl;
+                // std::cout << "Rows fetched using index: " << table.rows.size() << std::endl;
+                std::vector<std::uint64_t> row_ids;
                 for (const auto &row : table.rows)
                 {
-                    // for (const auto &col : query.columns)
-                    // {
-                    //     if (row.find(col) != row.end())
-                    //     {
-                    //         const Cell &cell = row.at(col);
-                    //         if (std::holds_alternative<uint64_t>(cell))
-                    //             std::cout << std::get<uint64_t>(cell) << " ";
-                    //         else if (std::holds_alternative<std::string>(cell))
-                    //             std::cout << std::get<std::string>(cell) << " ";
-                    //         else
-                    //             std::cout << "NULL ";
-                    //     }
-                    // }
                     auto cell = row.at("rowid");
                     if (std::holds_alternative<uint64_t>(cell))
-                        std::cout << std::get<uint64_t>(cell) << std::endl;
+                    {
+                        // std::cout << std::get<uint64_t>(cell) << std::endl;
+                        row_ids.push_back(std::get<uint64_t>(cell));
+                    }
+                }
+                sort(row_ids.begin(), row_ids.end());
+                for (const auto &row_id : row_ids)
+                {
+                    // std::cout << "Fetching data for row ID: " << row_id << std::endl;
+                    table.fetch_data(row_id);
+                }
+                for (const auto &row : table.rows)
+                {
+                    if (row.find("id") != row.end() && std::holds_alternative<uint64_t>(row.at("id")))
+                    {
+                        std::cout << std::get<uint64_t>(row.at("id")) << "|" << std::get<std::string>(row.at("name")) << std::endl;
+                    }
                 }
                 break;
             }

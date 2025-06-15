@@ -2,7 +2,7 @@
 #include "globals.hpp"
 #include "utils/utils.hpp"
 
-void traverse_leaf_page(Table &table, uint32_t file_offset, uint16_t cell_count)
+void traverse_leaf_page(Table &table, uint32_t file_offset, uint16_t cell_count, uint64_t wanted_rowid)
 {
     for (uint16_t i = 0; i < cell_count; ++i)
     {
@@ -54,7 +54,14 @@ void traverse_leaf_page(Table &table, uint32_t file_offset, uint16_t cell_count)
                 row[column.name] = nullptr; // placeholder for unsupported types
             }
         }
-        table.rows.push_back(row);
+        auto _rowid = std::get<uint64_t>(row.at("id"));
+        if (rowid == -1 || wanted_rowid == _rowid)
+        {
+            // std::cout << "rowid: " << rowid << ", _rowid: " << _rowid << std::endl;
+            table.rows.push_back(row);
+            if (wanted_rowid == _rowid)
+                return;
+        }
     }
 }
 

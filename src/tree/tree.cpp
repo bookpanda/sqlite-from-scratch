@@ -4,7 +4,7 @@
 #include "tree/page.hpp"
 #include "tree/index.hpp"
 
-void traverse_tree(Table &table, uint64_t page_no)
+void traverse_tree(Table &table, uint64_t page_no, uint64_t rowid)
 {
     uint32_t file_offset = (page_no - 1) * page_size;
     database_file.seekg(file_offset);
@@ -19,15 +19,38 @@ void traverse_tree(Table &table, uint64_t page_no)
 
     if (page_header_size == 8)
     {
-        traverse_leaf_page(table, file_offset, cell_count);
+        traverse_leaf_page(table, file_offset, cell_count, rowid);
     }
     else if (page_header_size == 12)
     {
         auto child_pages = traverse_interior_page(table, file_offset, cell_count);
+        if (rowid == -1)
+        {
+
+            for (const auto &child : child_pages)
+            {
+                // std::cout << "Traversing child page: " << child.left_child_page << std::endl;
+                traverse_tree(table, child.left_child_page, rowid);
+            }
+            return;
+        }
+
         for (const auto &child : child_pages)
         {
-            // std::cout << "Traversing child page: " << child.left_child_page << std::endl;
-            traverse_tree(table, child.left_child_page);
+            if (child.rowid >= rowid)
+            {
+                // std::cout << "Key: " << child.rowid << ", traversing left child page: "
+                //           << child.left_child_page << std::endl;
+                traverse_tree(table, child.left_child_page, rowid);
+            }
+        }
+        auto last_child = child_pages.back();
+        if (last_child.rowid <= rowid)
+        {
+            // std::cout << "Key: " << last_child.rowid << ", traversing right child page: "
+            //           << last_child.left_child_page << std::endl;
+            // this is rightmost child page
+            traverse_tree(table, last_child.left_child_page, rowid);
         }
     }
     else
@@ -38,7 +61,7 @@ void traverse_tree(Table &table, uint64_t page_no)
 
 void traverse_index_tree(Table &table, uint64_t page_no, std::string where_val)
 {
-    std::cout << "Traversing index tree for table: " << table.tbl_name << ", page: " << page_no << std::endl;
+    // std::cout << "Traversing index tree for table: " << table.tbl_name << ", page: " << page_no << std::endl;
     uint32_t file_offset = (page_no - 1) * page_size;
     database_file.seekg(file_offset);
     uint8_t page_header_size = check_page_header_size(database_file);
@@ -57,16 +80,16 @@ void traverse_index_tree(Table &table, uint64_t page_no, std::string where_val)
         {
             if (child.key >= where_val)
             {
-                std::cout << "Key: " << child.key << ", traversing left child page: "
-                          << child.left_child_page << std::endl;
+                // std::cout << "Key: " << child.key << ", traversing left child page: "
+                //           << child.left_child_page << std::endl;
                 traverse_index_tree(table, child.left_child_page, where_val);
             }
         }
         auto last_child = child_pages.back();
         if (last_child.key <= where_val)
         {
-            std::cout << "Key: " << last_child.key << ", traversing right child page: "
-                      << last_child.left_child_page << std::endl;
+            // std::cout << "Key: " << last_child.key << ", traversing right child page: "
+            //           << last_child.left_child_page << std::endl;
             // this is rightmost child page
             traverse_index_tree(table, last_child.left_child_page, where_val);
         }
