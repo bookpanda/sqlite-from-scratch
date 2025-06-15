@@ -4,4 +4,4 @@
 #include <fstream>
 #include "table.hpp"
 
-void traverse_tree(Table &table);
+void traverse_tree(Table &table, uint64_t page_no);

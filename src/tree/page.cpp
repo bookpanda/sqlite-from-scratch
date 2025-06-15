@@ -59,3 +59,25 @@ void traverse_leaf_page(Table &table, uint32_t file_offset, uint16_t cell_count)
         table.rows.push_back(row);
     }
 }
+
+std::vector<ChildPage> traverse_interior_page(Table &table, uint32_t file_offset, uint16_t cell_count)
+{
+    std::vector<ChildPage> child_pages;
+    for (uint16_t i = 0; i < cell_count; ++i)
+    {
+        database_file.seekg(file_offset + INTERIOR_PAGE_HEADER_SIZE + i * 2);
+        uint16_t cell_offset = check_bytes(database_file, 2);
+
+        database_file.seekg(file_offset + cell_offset);
+        uint32_t left_child_page = check_bytes(database_file, 4);
+        uint64_t rowid = read_varint(database_file);
+        // std::cout << "Row " << i << ": " << std::endl;
+        // std::cout << "  Row ID: " << rowid << std::endl;
+        // std::cout << "  Left Child Page: " << left_child_page << std::endl;
+        child_pages.push_back({left_child_page, rowid});
+    }
+
+    database_file.seekg(file_offset + LEAF_PAGE_HEADER_SIZE);
+    uint32_t rightmost_page = check_bytes(database_file, 4);
+    child_pages.push_back({rightmost_page, 0});
+}

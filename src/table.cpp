@@ -26,7 +26,7 @@ void Table::fetch_data()
         std::cout << "Data already fetched for table: " << tbl_name << std::endl;
         return;
     }
-    traverse_tree(*this);
+    traverse_tree(*this, rootpage);
 
     _fetched = true;
 }
