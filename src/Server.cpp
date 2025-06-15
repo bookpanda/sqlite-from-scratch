@@ -64,12 +64,34 @@ int main(int argc, char *argv[])
     {
         auto query = parse_sql(command);
         auto selectedTable = query.table;
+        // std::cout << "Selected table: " << selectedTable << std::endl;
+        // std::cout << "Columns: ";
+        // for (const auto &col : query.columns)
+        // {
+        //     std::cout << col << " ";
+        // }
+        // std::cout << std::endl;
 
-        for (const auto &table : tables)
+        for (auto &table : tables)
         {
             if (table.tbl_name == selectedTable)
             {
-                std::cout << table.size() << std::endl;
+                table.fetch_data();
+                // table.print();
+                if (query.columns.size() == 1)
+                {
+                    if (query.columns[0] == "COUNT(*)")
+                        std::cout << table.size() << std::endl;
+                    else
+                    {
+                        for (auto &row : table.rows)
+                        {
+                            if (row.find(query.columns[0]) == row.end())
+                                continue;
+                            std::cout << std::get<std::string>(row[query.columns[0]]) << std::endl;
+                        }
+                    }
+                }
                 break;
             }
         }

@@ -1,6 +1,7 @@
 #include "column.hpp"
 #include <regex>
 #include <iostream>
+#include "utils/utils.hpp"
 
 std::vector<Column> parse_create_table(const std::string &sql)
 {
@@ -20,16 +21,18 @@ std::vector<Column> parse_create_table(const std::string &sql)
         std::string cols_raw = match[1];
         // \w = [A-Za-z0-9_]
         // (space) col_name type
-        std::regex col_def(R"(\s*([a-zA-Z_][\w]*)\s+([a-zA-Z]+))");
+        // ([^,]+) = captures everything until a comma
+        std::regex col_def(R"(\s*([a-zA-Z_][\w]*)\s+([^,\n]+))");
 
         auto begin = std::sregex_iterator(cols_raw.begin(), cols_raw.end(), col_def);
         auto end = std::sregex_iterator();
 
+        const std::string whitespace = " \t\n\r";
         for (std::sregex_iterator i = begin; i != end; ++i)
         {
-            // (*i)[1] = the first capturing group (column name)
-            // (*i)[2] = the second capturing group (column type)
-            columns.push_back({(*i)[1], (*i)[2]});
+            std::string col_name = (*i)[1].str();
+            std::string col_type = split_by_delim((*i)[2].str(), " ")[0]; // integer primary key autoincrement
+            columns.push_back({col_name, col_type});
         }
     }
 

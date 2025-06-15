@@ -7,6 +7,7 @@ and more.
 ./your_program.sh ./sample.db .dbinfo
 ./your_program.sh ./sample.db .tables
 ./your_program.sh sample.db "SELECT COUNT(*) FROM apples"
+./your_program.sh sample.db "SELECT name FROM apples"
 
 # test with real sqlite
 hexdump -C sample.db

@@ -26,6 +26,8 @@ public:
     std::string tbl_name;
     uint64_t rootpage;
     std::string sql;
+    std::vector<Row> rows;
+    std::vector<Column> columns;
 
     void print() const;
     int size() const;
@@ -33,8 +35,6 @@ public:
 
 private:
     uint16_t _size;
-    std::vector<Row> _rows;
-    std::vector<Column> _columns;
     bool _fetched = false;
 };
 
