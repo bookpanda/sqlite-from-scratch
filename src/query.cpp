@@ -50,8 +50,41 @@ ParsedQuery parse_sql(const std::string &query)
 
 void print_query_result(const Table &table, const ParsedQuery query)
 {
+    std::string where_col, where_val;
+    bool has_where = !query.where_clause.empty();
+
+    if (has_where)
+    {
+        std::regex where_regex(R"((\w+)\s*=\s*'(.*?)')", std::regex_constants::icase);
+        std::smatch where_match;
+
+        if (std::regex_search(query.where_clause, where_match, where_regex))
+        {
+            where_col = where_match[1];
+            where_val = where_match[2];
+        }
+        else
+        {
+            std::cerr << "Unsupported WHERE clause format: " << query.where_clause << std::endl;
+            return;
+        }
+    }
+
     for (auto &row : table.rows)
     {
+        // apply WHERE clause filter
+        if (has_where)
+        {
+            auto it = row.find(where_col);
+            if (it == row.end())
+                continue;
+
+            // reject if is NULL or does not match the value
+            if (std::holds_alternative<std::nullptr_t>(it->second) ||
+                std::get<std::string>(it->second) != where_val)
+                continue;
+        }
+
         std::vector<std::string> rowResult;
         for (auto &col : query.columns)
         {

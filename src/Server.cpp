@@ -64,14 +64,14 @@ int main(int argc, char *argv[])
     {
         auto query = parse_sql(command);
         auto selectedTable = query.table;
-        std::cout << "Selected table: " << selectedTable << std::endl;
-        std::cout << "Columns: ";
-        for (const auto &col : query.columns)
-        {
-            std::cout << col << ", ";
-        }
-        std::cout << std::endl;
-        std::cout << "Where clause: " << query.where_clause << std::endl;
+        // std::cout << "Selected table: " << selectedTable << std::endl;
+        // std::cout << "Columns: ";
+        // for (const auto &col : query.columns)
+        // {
+        //     std::cout << col << ", ";
+        // }
+        // std::cout << std::endl;
+        // std::cout << "Where clause: " << query.where_clause << std::endl;
 
         for (auto &table : tables)
         {
