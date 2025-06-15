@@ -1,6 +1,7 @@
 #include "table.hpp"
 #include "utils/utils.hpp"
 #include "globals.hpp"
+#include "tree/tree.hpp"
 
 Table::Table(const std::string &type,
              const std::string &name,
@@ -15,7 +16,7 @@ Table::Table(const std::string &type,
     rows.resize(_size);
 }
 
-int Table::size() const
+size_t Table::size() const
 {
     return _size;
 }
@@ -27,60 +28,8 @@ void Table::fetch_data()
         std::cout << "Data already fetched for table: " << tbl_name << std::endl;
         return;
     }
+    traverse_tree(*this, database_file);
 
-    uint32_t file_offset = (rootpage - 1) * page_size;
-    database_file.seekg(file_offset);
-    uint8_t page_header_size = check_page_header_size(database_file);
-
-    for (uint16_t i = 0; i < _size; ++i)
-    {
-        database_file.seekg(file_offset + page_header_size + i * 2);
-        uint16_t cell_offset = check_bytes(database_file, 2);
-
-        database_file.seekg(file_offset + cell_offset);
-        uint64_t record_size = read_varint(database_file);
-        uint64_t rowid = read_varint(database_file);
-        uint64_t header_size = read_varint(database_file);
-        // std::cout << "Row " << i << ": " << std::endl;
-        // std::cout << "  Row ID: " << rowid << std::endl;
-        // std::cout << "  Record Size: " << record_size << std::endl;
-        // std::cout << "  Record Header Size: " << header_size << std::endl;
-
-        std::vector<uint64_t> column_sizes;
-        for (const auto &column : columns)
-        {
-            uint64_t data_size = read_serial_type_size(database_file);
-            column_sizes.push_back(data_size);
-        }
-
-        for (size_t j = 0; j < columns.size(); ++j)
-        {
-            const auto &column = columns[j];
-            uint64_t data_size = column_sizes[j];
-            // std::cout << "  Column: " << column.name << ", Type: " << column.type << ", Size: " << data_size << std::endl;
-
-            if (column.type == "integer")
-            {
-                int64_t value = check_bytes(database_file, data_size);
-                rows[i][column.name] = value;
-            }
-            else if (column.type == "text")
-            {
-                std::string value = read_string(database_file, data_size);
-                rows[i][column.name] = value;
-            }
-            else if (column.type == "real")
-            {
-                double value = *reinterpret_cast<double *>(new char[data_size]);
-                database_file.read(reinterpret_cast<char *>(&value), data_size);
-                rows[i][column.name] = value;
-            }
-            else
-            {
-                rows[i][column.name] = nullptr; // placeholder for unsupported types
-            }
-        }
-    }
     _fetched = true;
 }
 

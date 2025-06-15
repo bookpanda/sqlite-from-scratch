@@ -11,6 +11,8 @@ and more.
 ./your_program.sh sample.db "select count(*) from apples"
 ./your_program.sh sample.db "SELECT name, color FROM apples"
 ./your_program.sh sample.db "SELECT name, color FROM apples WHERE color = 'Yellow'"
+./your_program.sh superheroes.db "SELECT id, name FROM superheroes WHERE eye_color = 'Pink Eyes'"
+./your_program.sh superheroes.db "SELECT id, name FROM superheroes"
 
 # test with real sqlite
 hexdump -C sample.db
@@ -158,3 +160,9 @@ A b-tree page is divided into regions in the following order:
 ```
 - page header: 0d 00 00 00  03 0e c3 00
 - cell pointer array: 0f 8f, 0f 3d, 0e c3 (not sorted, as it is sorted by rowid)
+
+### Interior page
+- leaf page header has 8 bytes
+- left page's cell: stores record
+- interior page header has 12 bytes (add rightmost pointer)
+- left page's cell: key (rowid) and the pointer to its immediate left (in B-tree node diagram)

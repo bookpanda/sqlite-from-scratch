@@ -30,7 +30,7 @@ public:
     std::vector<Column> columns;
 
     void print() const;
-    int size() const;
+    size_t size() const;
     void fetch_data();
 
 private:
