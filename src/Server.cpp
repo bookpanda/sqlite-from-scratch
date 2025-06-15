@@ -80,7 +80,7 @@ int main(int argc, char *argv[])
                 // table.print();
                 if (query.columns.size() == 1)
                 {
-                    if (query.columns[0] == "COUNT(*)")
+                    if (to_uppercase(query.columns[0]) == "COUNT(*)")
                         std::cout << table.size() << std::endl;
                     else
                     {

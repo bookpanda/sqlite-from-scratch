@@ -126,3 +126,14 @@ std::vector<std::string> split_by_delim(const std::string &s, const std::string 
 
     return result;
 }
+
+std::string to_uppercase(const std::string &s)
+{
+    std::string result;
+    result.reserve(s.size());
+    for (char c : s)
+    {
+        result += std::toupper(c);
+    }
+    return result;
+}
