@@ -13,6 +13,7 @@ and more.
 ./your_program.sh sample.db "SELECT name, color FROM apples"
 ./your_program.sh sample.db "SELECT name, color FROM apples WHERE color = 'Yellow'"
 ./your_program.sh superheroes.db "SELECT id, name FROM superheroes WHERE eye_color = 'Pink Eyes'"
+./your_program.sh superheroes.db "SELECT id, name FROM superheroes WHERE hair_color = 'Violet Hair'"
 ./your_program.sh ./companies.db .tables
 ./your_program.sh ./companies.db .dbinfo
 hexdump -C -s 12288 -n 4096 companies.db

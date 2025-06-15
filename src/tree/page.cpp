@@ -55,11 +55,11 @@ void traverse_leaf_page(Table &table, uint32_t file_offset, uint16_t cell_count,
             }
         }
         auto _rowid = std::get<uint64_t>(row.at("id"));
-        if (rowid == -1 || wanted_rowid == _rowid)
+        if (wanted_rowid == -1 || wanted_rowid == _rowid)
         {
             // std::cout << "rowid: " << rowid << ", _rowid: " << _rowid << std::endl;
             table.rows.push_back(row);
-            if (wanted_rowid == _rowid)
+            if (wanted_rowid != -1 && wanted_rowid == _rowid)
                 return;
         }
     }
