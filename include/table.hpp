@@ -32,7 +32,7 @@ public:
     void print() const;
     size_t size() const;
     void fetch_data();
-    void fetch_data_with_index(uint64_t index_page);
+    void fetch_data_with_index(uint64_t index_page, std::string where_val);
 
 private:
     bool _fetched = false;

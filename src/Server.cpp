@@ -86,17 +86,35 @@ int main(int argc, char *argv[])
             if (table.tbl_name != selectedTable)
                 continue;
 
+            table.print();
             if (indexes.find(query.where_col) != indexes.end())
             {
                 // fetch using index, populate table's rows
-                table.fetch_data_with_index(indexes[query.where_col]);
+                table.fetch_data_with_index(indexes[query.where_col], query.where_val);
+                std::cout << "Rows fetched using index: " << table.rows.size() << std::endl;
+                for (const auto &row : table.rows)
+                {
+                    // for (const auto &col : query.columns)
+                    // {
+                    //     if (row.find(col) != row.end())
+                    //     {
+                    //         const Cell &cell = row.at(col);
+                    //         if (std::holds_alternative<uint64_t>(cell))
+                    //             std::cout << std::get<uint64_t>(cell) << " ";
+                    //         else if (std::holds_alternative<std::string>(cell))
+                    //             std::cout << std::get<std::string>(cell) << " ";
+                    //         else
+                    //             std::cout << "NULL ";
+                    //     }
+                    // }
+                    auto cell = row.at("rowid");
+                    if (std::holds_alternative<uint64_t>(cell))
+                        std::cout << std::get<uint64_t>(cell) << std::endl;
+                }
+                break;
             }
-            else
-            {
-                table.fetch_data();
-            }
-            // table.print();
 
+            table.fetch_data();
             if (query.columns.size() == 1)
             {
                 if (to_uppercase(query.columns[0]) == "COUNT(*)")

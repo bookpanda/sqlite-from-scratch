@@ -31,14 +31,14 @@ void Table::fetch_data()
     _fetched = true;
 }
 
-void Table::fetch_data_with_index(uint64_t index_page)
+void Table::fetch_data_with_index(uint64_t index_page, std::string where_val)
 {
     if (_fetched)
     {
         std::cout << "Data already fetched for table: " << tbl_name << std::endl;
         return;
     }
-    traverse_index_tree(*this, index_page);
+    traverse_index_tree(*this, index_page, where_val);
 
     _fetched = true;
 }
