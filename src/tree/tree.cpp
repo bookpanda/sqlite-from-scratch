@@ -42,15 +42,13 @@ void traverse_tree(Table &table, uint64_t page_no, uint64_t rowid)
                 // std::cout << "Key: " << child.rowid << ", traversing left child page: "
                 //           << child.left_child_page << std::endl;
                 traverse_tree(table, child.left_child_page, rowid);
+                break;
             }
         }
-        auto last_child = child_pages.back();
-        if (last_child.rowid <= rowid)
+        if (child_pages.back().rowid <= rowid)
         {
-            // std::cout << "Key: " << last_child.rowid << ", traversing right child page: "
-            //           << last_child.left_child_page << std::endl;
-            // this is rightmost child page
-            traverse_tree(table, last_child.left_child_page, rowid);
+            traverse_tree(table, child_pages.back().left_child_page, rowid);
+            return;
         }
     }
     else
@@ -76,6 +74,16 @@ void traverse_index_tree(Table &table, uint64_t page_no, std::string where_val)
     else if (page_header_size == 12)
     {
         auto child_pages = traverse_index_interior_page(table, file_offset, cell_count, where_val);
+        if (child_pages[0].key >= where_val)
+        {
+            traverse_index_tree(table, child_pages[0].left_child_page, where_val);
+            return;
+        }
+        if (child_pages.back().key <= where_val)
+        {
+            traverse_index_tree(table, child_pages.back().left_child_page, where_val);
+            return;
+        }
         for (const auto &child : child_pages)
         {
             if (child.key >= where_val)
@@ -85,14 +93,14 @@ void traverse_index_tree(Table &table, uint64_t page_no, std::string where_val)
                 traverse_index_tree(table, child.left_child_page, where_val);
             }
         }
-        auto last_child = child_pages.back();
-        if (last_child.key <= where_val)
-        {
-            // std::cout << "Key: " << last_child.key << ", traversing right child page: "
-            //           << last_child.left_child_page << std::endl;
-            // this is rightmost child page
-            traverse_index_tree(table, last_child.left_child_page, where_val);
-        }
+        // auto last_child = child_pages.back();
+        // if (last_child.key <= where_val)
+        // {
+        //     // std::cout << "Key: " << last_child.key << ", traversing right child page: "
+        //     //           << last_child.left_child_page << std::endl;
+        //     // this is rightmost child page
+        //     traverse_index_tree(table, last_child.left_child_page, where_val);
+        // }
     }
     else
     {
