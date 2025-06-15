@@ -22,7 +22,7 @@ std::vector<Column> parse_create_table(const std::string &sql)
         // \w = [A-Za-z0-9_]
         // (space) col_name type
         // ([^,]+) = captures everything until a comma
-        std::regex col_def(R"(\s*([a-zA-Z_][\w]*)\s+([^,\n]+))");
+        std::regex col_def(R"(\s*(".*?"|[a-zA-Z_][\w]*)\s+([^,\n]+))");
 
         auto begin = std::sregex_iterator(cols_raw.begin(), cols_raw.end(), col_def);
         auto end = std::sregex_iterator();
@@ -31,6 +31,9 @@ std::vector<Column> parse_create_table(const std::string &sql)
         for (std::sregex_iterator i = begin; i != end; ++i)
         {
             std::string col_name = (*i)[1].str();
+            if (col_name.front() == '"' && col_name.back() == '"')
+                col_name = col_name.substr(1, col_name.size() - 2);
+
             std::string col_type = split_by_delim((*i)[2].str(), " ")[0]; // integer primary key autoincrement
             columns.push_back({col_name, col_type});
         }
