@@ -1,4 +1,5 @@
 #include "tree/index.hpp"
+#include "utils/utils.hpp"
 
 std::unordered_map<std::string, uint64_t> get_indexes(const std::vector<Table> &tables)
 {
@@ -8,7 +9,8 @@ std::unordered_map<std::string, uint64_t> get_indexes(const std::vector<Table> &
         if (table.type != "index")
             continue;
 
-        indexes[table.name] = table.rootpage;
+        auto parts = split_by_delim(table.name, "_");
+        indexes[parts.back()] = table.rootpage;
     }
     return indexes;
 }

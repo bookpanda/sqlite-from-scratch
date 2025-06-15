@@ -81,13 +81,15 @@ int main(int argc, char *argv[])
             if (table.tbl_name != selectedTable)
                 continue;
 
-            // if (indexes.find(table.name) != indexes.end())
-            // {
-            // }
-            // else
-            // {
-            table.fetch_data();
-            // }
+            if (indexes.find(table.name) != indexes.end())
+            {
+                // fetch using index, populate table's rows
+                table.fetch_data_with_index(indexes[query.where_col]);
+            }
+            else
+            {
+                table.fetch_data();
+            }
             // table.print();
 
             if (query.columns.size() == 1)

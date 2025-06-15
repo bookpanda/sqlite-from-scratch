@@ -31,6 +31,10 @@ void Table::fetch_data()
     _fetched = true;
 }
 
+void Table::fetch_data_with_index(uint64_t index_page)
+{
+}
+
 void Table::print() const
 {
     std::cout << "Table: " << name << std::endl;

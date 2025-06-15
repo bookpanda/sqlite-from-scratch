@@ -32,6 +32,7 @@ public:
     void print() const;
     size_t size() const;
     void fetch_data();
+    void fetch_data_with_index(uint64_t index_page);
 
 private:
     bool _fetched = false;
