@@ -59,6 +59,13 @@ uint64_t check_bytes(std::ifstream &file, uint64_t size)
     return value;
 }
 
+std::string read_string(std::ifstream &file, uint64_t size)
+{
+    std::string result(size, '\0');
+    file.read(&result[0], size);
+    return result;
+}
+
 uint64_t read_serial_type_size(std::ifstream &file)
 {
     uint64_t serial_type = read_varint(file);

@@ -5,6 +5,7 @@
 #include "utils/utils.hpp"
 #include "table.hpp"
 #include "globals.hpp"
+#include "query.hpp"
 
 int main(int argc, char *argv[])
 {
@@ -61,8 +62,8 @@ int main(int argc, char *argv[])
     }
     else
     {
-        auto parts = split_by_delim(command, " ");
-        auto selectedTable = parts.back();
+        auto query = parse_sql(command);
+        auto selectedTable = query.table;
 
         for (const auto &table : tables)
         {

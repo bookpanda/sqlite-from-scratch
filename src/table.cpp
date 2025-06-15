@@ -94,13 +94,6 @@ void Table::print() const
               << std::endl;
 }
 
-static std::string read_string(std::ifstream &file, uint64_t size)
-{
-    std::string result(size, '\0');
-    file.read(&result[0], size);
-    return result;
-}
-
 std::vector<Table> get_tables(std::ifstream &database_file)
 {
     uint32_t offset = 100; // db header offset
